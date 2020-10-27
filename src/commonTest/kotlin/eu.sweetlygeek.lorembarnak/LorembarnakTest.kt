@@ -7,38 +7,62 @@ import kotlin.test.assertTrue
 
 class LorembarnakTest {
 
-    private fun checkLorembarnak(text: String, matches: Sequence<MatchResult>, count: Int? = null) {
-        assertEquals('.', text.last(), "Last char in $text should be a period")
-        if (count == null) {
-            assertFalse(matches.none(), "There should be at least a swear word in $text")
-        } else {
-            assertEquals(count, matches.count(), "There should be $count swear words in $text")
+    private fun String.checkLorembarnak(count: Int? = null) {
+        val matches = swearRegex.findAll(this)
+        if (!isEmpty()) {
+            assertEquals('.', last(), "Last char in $this should be a period")
         }
-        val firstMatch = matches.first()
-        val firstSwear = firstMatch.value
-        assertTrue(firstMatch.range.first == 0, "First word $firstSwear in $text should be a swear word")
-        assertEquals(firstSwear.take(1).toUpperCase(), firstSwear.take(1), "First swear $firstSwear in $text should be capitalized")
-        matches.drop(1).forEach { match ->
-            val value = match.value
-            assertEquals(value.toLowerCase(), value, "Swear word $value in $text should not be capitalized")
+        if (count == null) {
+            assertFalse(matches.none(), "There should be at least a swear word in $this")
+        } else {
+            assertEquals(count, matches.count(), "There should be $count swear words in $this")
+        }
+        if (!isEmpty()) {
+            val firstMatch = matches.first()
+            val firstSwear = firstMatch.value
+            assertTrue(firstMatch.range.first == 0, "First word $firstSwear in $this should be a swear word")
+            assertEquals(
+                firstSwear.take(1).toUpperCase(),
+                firstSwear.take(1),
+                "First swear $firstSwear in $this should be capitalized"
+            )
+            matches.drop(1).forEach { match ->
+                val value = match.value
+                val range = match.range
+                assertEquals(value.toLowerCase(), value, "Swear word $value in $this should not be capitalized")
+                if (vowelsRegex.matches(value.take(1))) {
+                    assertEquals(
+                        "d'",
+                        substring(range.first - 2, range.first),
+                        "Swear word $value in $this should be prefixed with d'"
+                    )
+                } else {
+                    assertEquals(
+                        "de ",
+                        substring(range.first - 3, range.first),
+                        "Swear word $value in $this should be prefixed with de"
+                    )
+                }
+            }
         }
     }
 
     @Test
     fun testRandom() {
-        val text = Lorembarnak.getText()
-        val matches = swearRegex.findAll(text)
-        checkLorembarnak(text, matches)
+        repeat(10) {
+            Lorembarnak.getText().checkLorembarnak()
+        }
     }
 
     @Test
     fun testSpecified() {
-        val text = Lorembarnak.getText(5)
-        val matches = swearRegex.findAll(text)
-        checkLorembarnak(text, matches, 5)
+        repeat(10) { index ->
+            Lorembarnak.getText(index).checkLorembarnak(index)
+        }
     }
 
     companion object {
+        private val vowelsRegex = Lorembarnak.VOWELS.toRegex()
         private val swearRegex = Lorembarnak
             .swears
             .flatMap { array ->

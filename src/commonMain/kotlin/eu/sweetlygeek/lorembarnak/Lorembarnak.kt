@@ -9,32 +9,32 @@ public object Lorembarnak {
 
     internal val swears = arrayOf(
         arrayOf("tabarnak", "tabarnouche", "tabarouette", "taboire", "tabarslaque"),
-        arrayOf("câlisse", "câlique", "câline", "câline de bine", "câliboire"),
+        arrayOf("câlisse", "câlique", "câline de bine", "câline", "câliboire"),
+        arrayOf("bout d'crisse"),
         arrayOf("crisse", "christie", "crime"),
         arrayOf("ostie", "astie", "estique", "ostifie", "esprit"),
-        arrayOf("ciboire", "saint-ciboire"),
+        arrayOf("saint-ciboire", "ciboire"),
         arrayOf("torrieux"),
-        arrayOf("cimonaque", "saint-cimonaque"),
+        arrayOf("saint-cimonaque", "cimonaque"),
         arrayOf("baptême", "batince"),
         arrayOf("bâtard"),
         arrayOf("calvaire", "calvince"),
         arrayOf("mosus"),
+        arrayOf("maudite marde", "marde"),
         arrayOf("maudit", "mautadit", "maudine"),
         arrayOf("sacrament"),
-        arrayOf("viarge", "sainte-viarge", "bout d'viarge"),
+        arrayOf("sainte-viarge", "bout d'viarge", "viarge"),
         arrayOf("cibouleau"),
         arrayOf("sacréfice"),
         arrayOf("cibole", "cibolac"),
         arrayOf("enfant d'chienne"),
         arrayOf("verrat"),
-        arrayOf("marde", "maudite marde"),
         arrayOf("boswell"),
         arrayOf("sacristi", "sapristi"),
         arrayOf("jésus de plâtre"),
         arrayOf("torvisse"),
         arrayOf("patente à gosse"),
         arrayOf("viande à chien"),
-        arrayOf("bout d'crisse"),
         arrayOf("cul"),
         arrayOf("jésus marie joseph"),
         arrayOf("charrue"),
@@ -44,7 +44,9 @@ public object Lorembarnak {
 
     private val startsWithprefixRegex = "^(de\\s|d')".toRegex()
 
-    private val startsWithVowelRegex = "^[aeiouhyAEIOUHYÀ-ÖØ-öø-ÿ]".toRegex()
+    internal const val VOWELS = "[aeiouhyAEIOUHYÀ-ÖØ-öø-ÿ]"
+
+    private val startsWithVowelRegex = "^$VOWELS".toRegex()
 
     private fun fullSwears(): MutableList<MutableList<String>> {
         return swears.mapTo(mutableListOf()) { array -> array.toMutableList() }
